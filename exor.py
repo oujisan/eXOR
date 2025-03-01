@@ -2,6 +2,7 @@
 
 import argparse
 import sys
+import os
 
 banner = r'''
      __  _____  ___ 
@@ -101,26 +102,33 @@ def main():
         
         switch = True if args.keyhex else False
         switch_key = args.keyhex if switch else args.key
+        output = args.output if args.output else 'output.raw'
 
         if args.encrypt:
-            enc, hkey = encyrpt(msg=args.encrypt,key=args.keyhex if switch else args.key)
-            display_key = f"Key:{bytes.fromhex(args.keyhex).decode('utf-8')}" if args.keyhex else f"Hex Key: {hkey}"
-            print(f"{enc} ({display_key})")
-        elif args.decrypt:
-            dec = decrypt(msg=args.decrypt,key=switch_key,hexkey=switch)
-            print(dec)
-        elif args.encryptfile:
-            print(f"encrypt file: '{args.encryptfile}' using key: '{args.key}'")
             try:
-                transform_file(file=args.encryptfile,key=switch_key,output=args.output ,hexkey=switch)
-                print(f"\nEncrypt completed! Output saved as '{args.output}'")
+                enc, hkey = encyrpt(msg=args.encrypt,key=switch_key)
+                display_key = f"Key:{bytes.fromhex(args.keyhex).decode('utf-8')}" if args.keyhex else f"Hex Key: {hkey}"
+                print(f"{enc}\n({display_key})\n")
+            except Exception as e:
+                print(f"Error: {e}")
+        elif args.decrypt:
+            try:
+                dec = decrypt(msg=args.decrypt,key=switch_key,hexkey=switch)
+                print(f"{dec}\n")
+            except Exception as e:
+                print(f"Error: {e}")
+        elif args.encryptfile:
+            print(f"Encrypt file: '{args.encryptfile}' using key: '{args.key}'")
+            try:
+                transform_file(file=args.encryptfile, key=switch_key, output=output, hexkey=switch)
+                print(f"\nEncryption completed! Output saved as '{output}' in {os.getcwd()}")
             except Exception as e:
                 print(f"Error: {e}")
         elif args.decryptfile:
             print(f"Decrypt file: '{args.decryptfile}' using key: '{switch_key}'")
             try:
-                transform_file(file=args.decryptfile,key=switch_key,output=args.output ,hexkey=switch)
-                print(f"\nDecrypt completed! Output saved as '{args.output}'")
+                transform_file(file=args.decryptfile,key=switch_key,output=output, hexkey=switch)
+                print(f"\nDecryption completed! Output saved as '{output}' in {os.getcwd()}")
             except Exception as e:
                 print(f"Error: {e}")
     except SystemExit:
