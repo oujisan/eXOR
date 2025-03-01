@@ -1,4 +1,4 @@
-# 🔐 **eXOR (XOR Cipher)**
+# 🔐 **eXOR (XOR Cipher Tool)**
 
 A simple and flexible XOR-based encryption and decryption tool for text and files. Supports keys in string or hexadecimal format, ideal for basic data obfuscation needs.
 
