@@ -35,6 +35,9 @@ def transform_file(file, key, output, hexkey=False):
     mod = xor_cipher(msg=data,key=key,hexkey=hexkey)
     with open(output, 'wb') as mod_document:
         mod_document.write(mod)
+
+def check_key(msg, key):
+    return len(key) >= 2 and len(key) <= len(msg)
         
 def main():
     try:
@@ -106,9 +109,12 @@ def main():
 
         if args.encrypt:
             try:
-                enc, hkey = encyrpt(msg=args.encrypt,key=switch_key)
-                display_key = f"Key:{bytes.fromhex(args.keyhex).decode('utf-8')}" if args.keyhex else f"Hex Key: {hkey}"
-                print(f"{enc}\n({display_key})\n")
+                if check_key(msg=args.encrypt, key=switch_key):
+                    enc, hkey = encyrpt(msg=args.encrypt,key=switch_key)
+                    display_key = f"Key:{bytes.fromhex(args.keyhex).decode('utf-8')}" if args.keyhex else f"Hex Key: {hkey}"
+                    print(f"{enc}\n({display_key})\n")
+                else:
+                    parser.error(f"key length must be at least 2 characters and cannot exceed the message length")
             except Exception as e:
                 print(f"Error: {e}")
         elif args.decrypt:
@@ -120,8 +126,11 @@ def main():
         elif args.encryptfile:
             print(f"Encrypt file: '{args.encryptfile}' using key: '{args.key}'")
             try:
-                transform_file(file=args.encryptfile, key=switch_key, output=output, hexkey=switch)
-                print(f"\nEncryption completed! Output saved as '{output}' in {os.getcwd()}")
+                if check_key(msg=args.encryptfile, key=switch_key):
+                    transform_file(file=args.encryptfile, key=switch_key, output=output, hexkey=switch)
+                    print(f"\nEncryption completed! Output saved as '{output}' in {os.getcwd()}")
+                else:
+                    parser.error(f"key length must be at least 2 characters and cannot exceed the message length")
             except Exception as e:
                 print(f"Error: {e}")
         elif args.decryptfile:
