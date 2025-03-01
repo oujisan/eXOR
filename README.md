@@ -72,7 +72,7 @@ python exor.py
 ### 📌 **Basic Syntax:**
 
 ```bash
-exor [MODE] [INPUT] [KEY] [OUTPUT]
+exor [OPTION] <"text" | file> [OPTION KEY] <key> [-o | --output (for files)]
 ```
 
 ### 📌 **Argument Options:**
